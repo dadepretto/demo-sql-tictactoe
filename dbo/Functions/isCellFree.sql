@@ -1,30 +1,15 @@
-
-create function isCellFree (
-    @rowIdx int,
-    @colIdx int
-) returns tinyint as
+create function [dbo].[isCellFree] (
+    @rowIdx tinyint,
+    @colIdx tinyint
+) returns bit
+as
 begin
+    declare @cellState char(1);
 
-    /*
-        @Author: Davide De Pretto
-        @Date: 22/11/2019
-        @Description: Controlla se una cella è libera (=null)
-    */
+    select @cellState = [T].[cellState]
+    from [dbo].[TicTacToe] as [T]
+    where [T].[rowIdx] = @rowIdx
+        and [T].[colIdx] = @colIdx;
 
-    declare @cellState char(1)
-    select @cellState = cellState
-    from TicTacToe
-    where rowIdx = @rowIdx
-        and colIdx = @colIdx
-
-    declare @isFree tinyint = 1
-
-    if (@cellState is not null)
-    set @isFree = 0
-
-    return @isFree
-
-end
-
-go
-
+    return case when @cellState is null then 1 else 0 end;
+end;

@@ -1,38 +1,24 @@
-
-create function checkCoordinates (
-    @rowIdx int,
-    @colIdx int
-) returns tinyint as
+create function [dbo].[checkCoordinates] (
+    @rowIdx tinyint,
+    @colIdx tinyint
+) returns bit
+as
 begin
+    declare @check bit = (
+        select 0
+        from (
+            select
+                min([T].[RowIdx])   as [minRowIdx],
+                max([T].[RowIdx])   as [maxRowIdx],
+                min([T].[ColIdx])   as [minColIdx],
+                max([T].[ColIdx])   as [maxColIdx]
+            from [dbo].[TicTacToe] as [T]
+        ) as [TA]
+        where @rowIdx < [TA].[minRowIdx]
+            or @rowIdx > [TA].[maxRowIdx]
+            or @colIdx < [TA].[minColIdx]
+            or @colIdx > [TA].[maxColIdx]
+    );
 
-    /*
-        @Author: Davide De Pretto
-        @Date: 22/11/2019
-        @Description: Verifica che le coordinate fornite siano corrette
-    */
-
-    declare @minRowIdx int
-        , @maxRowIdx int
-        , @minColIdx int
-        , @maxColIdx int
-
-    select @minRowIdx = min(rowIdx)
-        , @maxRowIdx = max(rowIdx)
-        , @minColIdx = min(colIdx)
-        , @maxColIdx = max(colIdx)
-    from TicTacToe
-
-    declare @check TINYint = 1
-
-    if (@rowIdx < @minRowIdx or
-        @rowIdx > @maxRowIdx or
-        @colIdx < @minColIdx or
-        @colIdx > @maxColIdx)
-    set @check = 0
-
-    return @check
-
-end
-
-GO
-
+    return isnull(@check, 1);
+end;

@@ -1,10 +1,7 @@
 create table [dbo].[TicTacToe] (
-    [rowIdx]    int      not null,
-    [colIdx]    int      not null,
-    [cellState] char (1) default (null) null,
-    CHECK ([cellState]='O' or [cellState]='X')
+    [ticTacToeId]   uniqueidentifier not null default (newid()),
+    [rowIdx]        tinyint     not null,
+    [colIdx]        tinyint     not null,
+    [cellState]     char (1)    null,
+    check ([cellState] = 'O' or [cellState] = 'X')
 );
-
-
-go
-

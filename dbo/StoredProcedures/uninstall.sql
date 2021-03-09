@@ -1,15 +1,11 @@
-
-create procedure uninstall as 
+create procedure [dbo].[uninstall] as 
 begin
-    drop table TicTacToe
-    drop view Board
-    drop procedure newGame
-    drop function checkCoordinates
-    drop function isCellFree
-    drop function checkWin
-    drop procedure makeMove
-    drop procedure uninstall
+    drop table [dbo].[TicTacToe];
+    drop view [dbo].[Board];
+    drop procedure [dbo].[newGame];
+    drop function [dbo].[checkCoordinates];
+    drop function [dbo].[isCellFree];
+    drop function [dbo].[checkWin];
+    drop procedure [dbo].[makeMove];
+    drop procedure [dbo].[uninstall];
 end
-
-go
-

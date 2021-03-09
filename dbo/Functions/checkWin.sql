@@ -1,59 +1,46 @@
-
-create function checkWin() returns char as
+create function [dbo].[checkWin]() returns char
+as
 begin
+    declare @winner char,
+        @nRows int,
+        @nCols int;
 
-    /*
-        @Author: Davide De Pretto
-        @Date: 22/11/2019
-        @Description: Effettua una mossa sulla board di gioco
-    */
-
-    declare @winner char
-        , @nRows int
-        , @nCols int
-
-    select @nRows = count(distinct rowIdx)
-        , @nCols = count(distinct colIdx)
-    from TicTacToe
+    select @nRows = count(distinct [T].[rowIdx]),
+        @nCols = count(distinct [T].[colIdx])
+    from [dbo].[TicTacToe] as [T];
 
     -- Controllo le righe
-    select @winner = cellState
-    from TicTacToe
-    where cellState is not null
-    group by rowIdx, cellState
-    having count(cellState) = @nRows
+    select @winner = [T].[cellState]
+    from [dbo].[TicTacToe] as [T]
+    where [T].[cellState] is not null
+    group by [T].[rowIdx], [T].[cellState]
+    having count([T].[cellState]) = @nRows;
 
     -- Controllo le colonne
-    select @winner = cellState
-    from TicTacToe
-    where cellState is not null
-    group by colIdx, cellState
-    having count(cellState) = @nCols
+    select @winner = [T].[cellState]
+    from [dbo].[TicTacToe] as [T]
+    where [T].[cellState] is not null
+    group by [T].[colIdx], [T].[cellState]
+    having count([T].[cellState]) = @nCols;
     
     if @nRows = @nCols
     begin
-
         -- Controllo la diagonale primaria
-        select @winner = cellState
-        from TicTacToe
-        where cellState is not null
-            and rowIdx = colIdx
-        group by cellState
-        having count(cellState) = @nRows 
+        select @winner = [T].[cellState]
+        from [dbo].[TicTacToe] as [T]
+        where [T].[cellState] is not null
+            and [T].[rowIdx] = [T].[colIdx]
+        group by [T].[cellState]
+        having count([T].[cellState]) = @nRows;
 
         -- Controllo la diagonale secondaria
-        select @winner = cellState
-        from TicTacToe
-        where cellState is not null
-            and colIdx = (@nRows - 1 - rowIdx)
-        group by cellState
-        having count(cellState) = @nRows
-    
-    end
+        select @winner = [T].[cellState]
+        from [dbo].[TicTacToe] as [T]
+        where [T].[cellState] is not null
+            and [T].[colIdx] = (@nRows - 1 - [T].[rowIdx])
+        group by [T].[cellState]
+        having count([T].[cellState]) = @nRows;
+    end;
 
-    return @winner
-
+    return @winner;
 end
-
-go
-

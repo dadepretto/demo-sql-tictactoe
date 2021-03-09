@@ -1,48 +1,54 @@
-
-create procedure makeMove (
+create procedure [dbo].[makeMove] (
     @rowIdx int, 
     @colIdx int,
     @state char(1)
 ) as
 begin
 
-    /*
-        @Author: Davide De Pretto
-        @Date: 20/11/2019
-        @Description: Effettua una mossa sulla board di gioco
-    */
-    
-    declare @isValid tinyint
-    execute @isValid = checkCoordinates @rowIdx, @colIdx
-    if @isValid = 0
-    begin
-        raiserror('Coordinate non valide!', 16, 1)
-        return
-    end
-    
-    declare @isFree tinyint
-    execute @isFree = isCellFree @rowIdx, @colIdx
-    if @isFree = 0
-    begin
-        raiserror('La cella non è libera!', 16, 1)
-        return
-    end
+    set nocount, xact_abort on;
 
-    update TicTacToe
-    set cellState = @state
-    where rowIdx = @rowIdx
-        and colIdx = @colIdx
-    
-    select * from Board
+    begin try
+        declare @isValid bit;
 
-    declare @winner char
-    execute @winner = checkWin
-    if @winner is not null
-        select ('Ha vinto ' + @winner) as [State]
-    else
-    select ('Mossa effettuata!') as [State]
-    
+        execute @isValid = [dbo].[checkCoordinates] @rowIdx, @colIdx;
+
+        if @isValid = 0
+        begin
+            raiserror(N'Coordinate non valide!', 16, 1);
+        end;
+        
+        declare @isFree bit;
+
+        execute @isFree = [dbo].[isCellFree] @rowIdx, @colIdx;
+        
+        if @isFree = 0
+        begin
+            raiserror(N'La cella non è libera!', 16, 1);
+        end;
+
+        update [dbo].[TicTacToe]
+        set [cellState] = @state
+        where [rowIdx] = @rowIdx
+            and [colIdx] = @colIdx;
+        
+        select *
+        from [dbo].[Board];
+
+        declare @winner char;
+
+        execute @winner = [dbo].[checkWin];
+
+        if @winner is not null
+        begin
+            raiserror(N'Ha vinto %s', 0, 1, @winner) with nowait;
+        end;
+        else
+        begin
+            raiserror(N'Mossa effettuata!', 0, 1) with nowait;
+        end;
+
+    end try
+    begin catch
+        throw;
+    end catch    
 end
-
-go
-
