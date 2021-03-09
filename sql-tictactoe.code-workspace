@@ -4,5 +4,9 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"dataworkspace.projects": [
+			"TIC_TAC_TOE_SIMPLE.sqlproj"
+		]
+	}
 }
