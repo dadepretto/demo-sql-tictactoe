@@ -1,10 +1,10 @@
-CREATE TABLE [dbo].[TicTacToe] (
-    [rowIdx]    INT      NOT NULL,
-    [colIdx]    INT      NOT NULL,
-    [cellState] CHAR (1) DEFAULT (NULL) NULL,
-    CHECK ([cellState]='O' OR [cellState]='X')
+create table [dbo].[TicTacToe] (
+    [rowIdx]    int      not null,
+    [colIdx]    int      not null,
+    [cellState] char (1) default (null) null,
+    CHECK ([cellState]='O' or [cellState]='X')
 );
 
 
-GO
+go
 

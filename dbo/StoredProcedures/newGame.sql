@@ -1,6 +1,6 @@
 
-CREATE PROCEDURE newGame AS
-BEGIN
+create procedure newGame as
+begin
 
     /*
         @Author: Davide De Pretto
@@ -8,17 +8,17 @@ BEGIN
         @Description: Effettua il reset della board di gioco
     */
 
-    TRUNCATE TABLE TicTacToe
+    truncate table TicTacToe
 
-    INSERT INTO TicTacToe (rowIdx, colIdx)
-    VALUES 
+    insert into TicTacToe (rowIdx, colIdx)
+    values 
         (0, 0), (0, 1), (0, 2),
         (1, 0), (1, 1), (1, 2),
         (2, 0), (2, 1), (2, 2)
 
-    PRINT('Che la sfida abbia inizio!')
+    print('Che la sfida abbia inizio!')
 
-END
+end
 
-GO
+go
 

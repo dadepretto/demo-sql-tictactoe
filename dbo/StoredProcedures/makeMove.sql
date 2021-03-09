@@ -1,10 +1,10 @@
 
-CREATE PROCEDURE makeMove (
-    @rowIdx INT, 
-    @colIdx INT,
-    @state CHAR(1)
-) AS
-BEGIN
+create procedure makeMove (
+    @rowIdx int, 
+    @colIdx int,
+    @state char(1)
+) as
+begin
 
     /*
         @Author: Davide De Pretto
@@ -12,37 +12,37 @@ BEGIN
         @Description: Effettua una mossa sulla board di gioco
     */
     
-    DECLARE @isValid TINYINT
-    EXEC @isValid = checkCoordinates @rowIdx, @colIdx
-    IF @isValid = 0
-    BEGIN
-        RAISERROR('Coordinate non valide!', 16, 1)
-        RETURN
-    END
+    declare @isValid tinyint
+    execute @isValid = checkCoordinates @rowIdx, @colIdx
+    if @isValid = 0
+    begin
+        raiserror('Coordinate non valide!', 16, 1)
+        return
+    end
     
-    DECLARE @isFree TINYINT
-    EXEC @isFree = isCellFree @rowIdx, @colIdx
-    IF @isFree = 0
-    BEGIN
-        RAISERROR('La cella non è libera!', 16, 1)
-        RETURN
-    END
+    declare @isFree tinyint
+    execute @isFree = isCellFree @rowIdx, @colIdx
+    if @isFree = 0
+    begin
+        raiserror('La cella non è libera!', 16, 1)
+        return
+    end
 
-    UPDATE TicTacToe
-    SET cellState = @state
-    WHERE rowIdx = @rowIdx
-        AND colIdx = @colIdx
+    update TicTacToe
+    set cellState = @state
+    where rowIdx = @rowIdx
+        and colIdx = @colIdx
     
-    SELECT * FROM Board
+    select * from Board
 
-    DECLARE @winner CHAR
-    EXEC @winner = checkWin
-    IF @winner IS NOT NULL
-        SELECT ('Ha vinto ' + @winner) AS [State]
-    ELSE
-    SELECT ('Mossa effettuata!') AS [State]
+    declare @winner char
+    execute @winner = checkWin
+    if @winner is not null
+        select ('Ha vinto ' + @winner) as [State]
+    else
+    select ('Mossa effettuata!') as [State]
     
-END
+end
 
-GO
+go
 

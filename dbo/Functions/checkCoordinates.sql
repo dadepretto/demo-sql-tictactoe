@@ -1,9 +1,9 @@
 
-CREATE FUNCTION checkCoordinates (
-    @rowIdx INT,
-    @colIdx INT
-) RETURNS TINYINT AS
-BEGIN
+create function checkCoordinates (
+    @rowIdx int,
+    @colIdx int
+) returns tinyint as
+begin
 
     /*
         @Author: Davide De Pretto
@@ -11,28 +11,28 @@ BEGIN
         @Description: Verifica che le coordinate fornite siano corrette
     */
 
-    DECLARE @minRowIdx INT
-        , @maxRowIdx INT
-        , @minColIdx INT
-        , @maxColIdx INT
+    declare @minRowIdx int
+        , @maxRowIdx int
+        , @minColIdx int
+        , @maxColIdx int
 
-    SELECT @minRowIdx = MIN(rowIdx)
-        , @maxRowIdx = MAX(rowIdx)
-        , @minColIdx = MIN(colIdx)
-        , @maxColIdx = MAX(colIdx)
-    FROM TicTacToe
+    select @minRowIdx = min(rowIdx)
+        , @maxRowIdx = max(rowIdx)
+        , @minColIdx = min(colIdx)
+        , @maxColIdx = max(colIdx)
+    from TicTacToe
 
-    DECLARE @check TINYINT = 1
+    declare @check TINYint = 1
 
-    IF (@rowIdx < @minRowIdx OR
-        @rowIdx > @maxRowIdx OR
-        @colIdx < @minColIdx OR
+    if (@rowIdx < @minRowIdx or
+        @rowIdx > @maxRowIdx or
+        @colIdx < @minColIdx or
         @colIdx > @maxColIdx)
-    SET @check = 0
+    set @check = 0
 
-    RETURN @check
+    return @check
 
-END
+end
 
 GO
 

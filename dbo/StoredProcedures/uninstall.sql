@@ -1,15 +1,15 @@
 
-CREATE PROCEDURE uninstall AS 
-BEGIN
-    DROP TABLE TicTacToe
-    DROP VIEW Board
-    DROP PROCEDURE newGame
-    DROP FUNCTION checkCoordinates
-    DROP FUNCTION isCellFree
-    DROP FUNCTION checkWin
-    DROP PROCEDURE makeMove
-    DROP PROCEDURE uninstall
-END
+create procedure uninstall as 
+begin
+    drop table TicTacToe
+    drop view Board
+    drop procedure newGame
+    drop function checkCoordinates
+    drop function isCellFree
+    drop function checkWin
+    drop procedure makeMove
+    drop procedure uninstall
+end
 
-GO
+go
 

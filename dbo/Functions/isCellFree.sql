@@ -1,30 +1,30 @@
 
-CREATE FUNCTION isCellFree (
-    @rowIdx INT,
-    @colIdx INT
-) RETURNS TINYINT AS
-BEGIN
+create function isCellFree (
+    @rowIdx int,
+    @colIdx int
+) returns tinyint as
+begin
 
     /*
         @Author: Davide De Pretto
         @Date: 22/11/2019
-        @Description: Controlla se una cella è libera (=NULL)
+        @Description: Controlla se una cella è libera (=null)
     */
 
-    DECLARE @cellState CHAR(1)
-    SELECT @cellState = cellState
-    FROM TicTacToe
-    WHERE rowIdx = @rowIdx
-        AND colIdx = @colIdx
+    declare @cellState char(1)
+    select @cellState = cellState
+    from TicTacToe
+    where rowIdx = @rowIdx
+        and colIdx = @colIdx
 
-    DECLARE @isFree TINYINT = 1
+    declare @isFree tinyint = 1
 
-    IF (@cellState IS NOT NULL)
-    SET @isFree = 0
+    if (@cellState is not null)
+    set @isFree = 0
 
-    RETURN @isFree
+    return @isFree
 
-END
+end
 
-GO
+go
 

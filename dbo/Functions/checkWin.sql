@@ -1,6 +1,6 @@
 
-CREATE FUNCTION checkWin() RETURNS CHAR AS
-BEGIN
+create function checkWin() returns char as
+begin
 
     /*
         @Author: Davide De Pretto
@@ -8,52 +8,52 @@ BEGIN
         @Description: Effettua una mossa sulla board di gioco
     */
 
-    DECLARE @winner CHAR
-        , @nRows INT
-        , @nCols INT
+    declare @winner char
+        , @nRows int
+        , @nCols int
 
-    SELECT @nRows = COUNT(DISTINCT rowIdx)
-        , @nCols = COUNT(DISTINCT colIdx)
-    FROM TicTacToe
+    select @nRows = count(distinct rowIdx)
+        , @nCols = count(distinct colIdx)
+    from TicTacToe
 
     -- Controllo le righe
-    SELECT @winner = cellState
-    FROM TicTacToe
-    WHERE cellState IS NOT NULL
-    GROUP BY rowIdx, cellState
-    HAVING COUNT(cellState) = @nRows
+    select @winner = cellState
+    from TicTacToe
+    where cellState is not null
+    group by rowIdx, cellState
+    having count(cellState) = @nRows
 
     -- Controllo le colonne
-    SELECT @winner = cellState
-    FROM TicTacToe
-    WHERE cellState IS NOT NULL
-    GROUP BY colIdx, cellState
-    HAVING COUNT(cellState) = @nCols
+    select @winner = cellState
+    from TicTacToe
+    where cellState is not null
+    group by colIdx, cellState
+    having count(cellState) = @nCols
     
-    IF @nRows = @nCols
-    BEGIN
+    if @nRows = @nCols
+    begin
 
         -- Controllo la diagonale primaria
-        SELECT @winner = cellState
-        FROM TicTacToe
-        WHERE cellState IS NOT NULL
-            AND rowIdx = colIdx
-        GROUP BY cellState
-        HAVING COUNT(cellState) = @nRows 
+        select @winner = cellState
+        from TicTacToe
+        where cellState is not null
+            and rowIdx = colIdx
+        group by cellState
+        having count(cellState) = @nRows 
 
         -- Controllo la diagonale secondaria
-        SELECT @winner = cellState
-        FROM TicTacToe
-        WHERE cellState IS NOT NULL
-            AND colIdx = (@nRows - 1 - rowIdx)
-        GROUP BY cellState
-        HAVING COUNT(cellState) = @nRows
+        select @winner = cellState
+        from TicTacToe
+        where cellState is not null
+            and colIdx = (@nRows - 1 - rowIdx)
+        group by cellState
+        having count(cellState) = @nRows
     
-    END
+    end
 
-    RETURN @winner
+    return @winner
 
-END
+end
 
-GO
+go
 
