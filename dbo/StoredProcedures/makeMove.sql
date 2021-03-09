@@ -46,7 +46,6 @@ begin
         begin
             raiserror(N'Mossa effettuata!', 0, 1) with nowait;
         end;
-
     end try
     begin catch
         throw;
