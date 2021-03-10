@@ -1,15 +1,18 @@
 create function [dbo].[isCellFree] (
+    @gameId uniqueidentifier,
     @rowIdx tinyint,
     @colIdx tinyint
 ) returns bit
 as
 begin
-    declare @cellState char(1);
+    declare @isFree bit;
 
-    select @cellState = [T].[cellState]
-    from [dbo].[TicTacToe] as [T]
-    where [T].[rowIdx] = @rowIdx
-        and [T].[colIdx] = @colIdx;
+    select @isFree = 0
+    from [dbo].[GameBoard] as [GB]
+    where [GB].[GameId] = @gameId
+        and [GB].[RowIdx] = @rowIdx
+        and [GB].[ColIdx] = @colIdx
+        and [GB].[CellState] is not null;
 
-    return case when @cellState is null then 1 else 0 end;
+    return isnull(@isFree, 1);
 end;

@@ -1,17 +1,41 @@
-create procedure [dbo].[newGame]
+create procedure [dbo].[newGame] (
+    @gameId uniqueidentifier out,
+    @initialPlayer char(1) = 'X'
+)
 as
+declare
+    @message nvarchar(max);
 begin
-    truncate table [dbo].[TicTacToe];
+    set nocount, xact_abort on;
+    set transaction isolation level serializable;
 
-    insert into [dbo].[TicTacToe] ([rowIdx], [colIdx])
-    values 
-        (0, 0), (0, 1), (0, 2),
-        (1, 0), (1, 1), (1, 2),
-        (2, 0), (2, 1), (2, 2)
+    begin transaction;
+    begin try
+        if @gameId is null
+        begin
+            set @gameId = newid();
+        end;
 
-    raiserror(N'Che la sfida abbia inizio!', 0, 1) with nowait;
+        insert into [dbo].[Game] ([GameId], [CurrentPlayer])
+        values (@gameId, @initialPlayer);
 
-end
+        insert into [dbo].[GameBoard] ([GameId], [RowIdx], [ColIdx])
+        values 
+            (@gameId, 0, 0), (@gameId, 0, 1), (@gameId, 0, 2),
+            (@gameId, 1, 0), (@gameId, 1, 1), (@gameId, 1, 2),
+            (@gameId, 2, 0), (@gameId, 2, 1), (@gameId, 2, 2)
 
-go
+        select [RowIdx], [0], [1], [2]
+        from [dbo].[pivotedBoard](@gameId);
 
+        commit transaction;
+    end try
+    begin catch
+        if @@trancount > 0
+        begin
+            rollback transaction;
+        end;
+        
+        throw;
+    end catch
+end;

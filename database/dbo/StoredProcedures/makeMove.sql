@@ -1,53 +1,77 @@
 create procedure [dbo].[makeMove] (
+    @gameId uniqueidentifier,
     @rowIdx int, 
     @colIdx int,
-    @state char(1)
+    @currentPlayer char(1) output,
+    @newPlayer char(1) output,
+    @winner char(1) output
 ) as
+declare
+    @message nvarchar(max),
+    @isValid bit,
+    @isFree bit;
 begin
-
     set nocount, xact_abort on;
+    set transaction isolation level serializable;
 
+    begin transaction;
     begin try
-        declare @isValid bit;
-
-        execute @isValid = [dbo].[checkCoordinates] @rowIdx, @colIdx;
+        execute @isValid = [dbo].[areCoordinatesValid]
+            @gameId = @gameId,
+            @rowIdx = @rowIdx,
+            @colIdx = @colIdx;
 
         if @isValid = 0
         begin
-            raiserror(N'Coordinate non valide!', 16, 1);
+            set @message = N'Invalid coordinates (%d, %d)';
+            raiserror(@message, 16, 1, @rowIdx, @colIdx);
         end;
         
-        declare @isFree bit;
-
-        execute @isFree = [dbo].[isCellFree] @rowIdx, @colIdx;
+        execute @isFree = [dbo].[isCellFree]
+            @gameId = @gameId,
+            @rowIdx = @rowIdx,
+            @colIdx = @colIdx;
         
         if @isFree = 0
         begin
-            raiserror(N'La cella non è libera!', 16, 1);
+            set @message = N'The cell (%d, %d) is not empty!'
+            raiserror(@message, 16, 1, @rowIdx, @colIdx);
         end;
 
-        update [dbo].[TicTacToe]
-        set [cellState] = @state
-        where [rowIdx] = @rowIdx
-            and [colIdx] = @colIdx;
-        
-        select *
-        from [dbo].[Board];
+        select @currentPlayer = [G].[CurrentPlayer]
+        from [dbo].[Game] as [G]
+        where [G].[GameId] = @gameId;
 
-        declare @winner char;
+        update [GameBoard]
+        set [CellState] = @currentPlayer
+        where [GameId] = @gameId
+            and [RowIdx] = @rowIdx
+            and [ColIdx] = @colIdx;
 
-        execute @winner = [dbo].[checkWin];
+        select [RowIdx], [0], [1], [2]
+        from [dbo].[pivotedBoard](@gameId);
 
-        if @winner is not null
+        execute [dbo].[checkWin]
+            @gameId = @gameId,
+            @winner = @winner output;
+
+        if @winner is null
         begin
-            raiserror(N'Ha vinto %s', 0, 1, @winner) with nowait;
+            set @newPlayer = case @currentPlayer when 'X' then 'O' else 'X' end;
+
+            update [Game]
+            set [CurrentPlayer] = @newPlayer
+            where [GameId] = @gameId;
         end;
-        else
-        begin
-            raiserror(N'Mossa effettuata!', 0, 1) with nowait;
-        end;
+
+        commit transaction;
     end try
     begin catch
+        if @@trancount > 1
+        begin
+            rollback;
+        end;
+        
         throw;
     end catch    
 end

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Name>TIC_TAC_TOE_SIMPLE</Name>
+    <Name>sql-tictactoe</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{B7064194-1318-40B7-A23D-E912E13C6AEE}</ProjectGuid>
@@ -11,8 +11,8 @@
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
-    <RootNamespace>TIC_TAC_TOE_SIMPLE</RootNamespace>
-    <AssemblyName>TIC_TAC_TOE_SIMPLE</AssemblyName>
+    <RootNamespace>sql-tictactoe</RootNamespace>
+    <AssemblyName>sql-tictactoe</AssemblyName>
     <ModelCollation>1033, CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
@@ -52,31 +52,32 @@
     <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
     <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
   </PropertyGroup>
-  <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(NETCoreTargetsPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets"/>
-  <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets"/>
-  <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets"/>
+  <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(NETCoreTargetsPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
-    <PackageReference Condition="'$(NetCoreBuild)' == 'true'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All"/>
+    <PackageReference Condition="'$(NetCoreBuild)' == 'true'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties"/>
-    <Folder Include="dbo"/>
-    <Folder Include="dbo\Views"/>
-    <Folder Include="dbo\Tables"/>
-    <Folder Include="dbo\StoredProcedures"/>
-    <Folder Include="dbo\Functions"/>
+    <Folder Include="Properties" />
+    <Folder Include="dbo" />
+    <Folder Include="dbo\Views" />
+    <Folder Include="dbo\Tables" />
+    <Folder Include="dbo\StoredProcedures" />
+    <Folder Include="dbo\Functions" />
   </ItemGroup>
   <Target Name="AfterClean">
-    <Delete Files="$(BaseIntermediateOutputPath)\project.assets.json"/>
+    <Delete Files="$(BaseIntermediateOutputPath)\project.assets.json" />
   </Target>
   <ItemGroup>
-    <Build Include="dbo\Views\Board.sql"/>
-    <Build Include="dbo\Tables\TicTacToe.sql"/>
-    <Build Include="dbo\StoredProcedures\uninstall.sql"/>
-    <Build Include="dbo\StoredProcedures\newGame.sql"/>
-    <Build Include="dbo\StoredProcedures\makeMove.sql"/>
-    <Build Include="dbo\Functions\isCellFree.sql"/>
-    <Build Include="dbo\Functions\checkWin.sql"/>
-    <Build Include="dbo\Functions\checkCoordinates.sql"/>
+    <Build Include="dbo\Tables\Game.sql" />
+    <Build Include="dbo\Tables\GameBoard.sql" />
+    <Build Include="dbo\StoredProcedures\newGame.sql" />
+    <Build Include="dbo\StoredProcedures\makeMove.sql" />
+    <Build Include="dbo\StoredProcedures\checkWin.sql" />
+    <Build Include="dbo\StoredProcedures\uninstall.sql" />
+    <Build Include="dbo\Functions\isCellFree.sql" />
+    <Build Include="dbo\Functions\areCoordinatesValid.sql" />
+    <Build Include="dbo\Functions\pivotedBoard.sql" />
   </ItemGroup>
 </Project>
